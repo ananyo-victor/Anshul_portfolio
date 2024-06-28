@@ -107,7 +107,7 @@ const App = () => {
               </a>
             </div>
             <a
-              href="https://github.com/your-profile"
+              href="https://github.com/Anshul-2806"
               className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-lg"
             >
               Github Profile
