@@ -1,24 +1,48 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import avatar from '../images/hehe.jpeg' // Ensure you have an avatar.png in the src directory
 import Typewriter from './Typewriter';
+import axios from 'axios';
 
 function About() {
     const words = ['Developer', 'Designer', 'Creator', 'Full Stack Developer'];
+    const [users, setUsers] = useState([{ _id: '', id: 1, name: '', resume: '', github: '', photo: '' }]);
+
+    useEffect(() => {
+        fetchPortfolio();
+    }, []);
+
+    const fetchPortfolio = async () => {
+        try {
+            const response = await axios.get('https://anshul-portfolio-admin-be.onrender.com/portfolio/receive');
+            const data = response.data;
+
+            if (data) {
+                setUsers(data[0].users.map(user => ({
+                    id: user.id,
+                    name: user.name,
+                    resume: user.resume,
+                    photo: user.photo,
+                })));
+            }
+        } catch (error) {
+            console.error('Error fetching portfolio data', error);
+        }
+    };
+
     return (
         <div id='about' className='lg:h-screen max-h-fit text-white w-full bg-gradient-to-br from-purple-950 via-black to-blue-950'>
             <section className='container mx-auto lg:w-[70%]'>
-                <div className='h-16 w-full'></div>
-                <div>
-                    {/* <AnimatedSVG/> */}
-                </div>
-                <div className='flex lg:flex-row flex-col-reverse w-full items-center'>
+                {users.map((user,index)=>(
+
+                
+                <div key={index} className='flex lg:flex-row flex-col-reverse w-full items-center'>
 
                     <div id='left' className="lg:w-1/2 lg:h-full flex flex-col lg:items-start items-center justify-center">
                         <h2 className="lg:text-5xl text-4xl font-bold my-1">Hi, I am</h2>
-                        <h1 className="lg:text-6xl text-5xl font-bold my-1">HeHe Anshul Gupta</h1>
+                        <h1 className="lg:text-6xl text-5xl font-bold my-1">{user.name}</h1>
                         <p className="lg:text-4xl text-3xl font-bold my-1 mt-4">I am a <span className='text-purple-600'><Typewriter words={words} /></span></p>
                         <p className="mt-10 mx-6 lg:mx-0 lg:text-left lg:text-lg text-xl">I am a motivated and versatile individual, always eager to take on new challenges. With a passion for learning, I am dedicated to delivering high-quality results. With a positive attitude and a growth mindset, I am ready to make a meaningful contribution and achieve great things.</p>
-                        <button className="mt-10 size-fit lg:text-2xl text-xl font-bold bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-3xl"><a href="/">Check Resume</a></button>
+                        <button className="mt-10 size-fit lg:text-2xl text-xl font-bold bg-purple-600 hover:bg-purple-700 text-white px-8 py-4 rounded-3xl"><a href={user.resume}>Check Resume</a></button>
                     </div>
 
                     <div id='right' className='lg:w-1/2 lg:h-full flex items-center justify-center lg:p-20 p-16'>
@@ -28,6 +52,7 @@ function About() {
                     </div>
 
                 </div>
+            ))}
             </section>
         </div>
     )
